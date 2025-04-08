@@ -2,10 +2,10 @@
  Draw and change (almost) entirely with your fingers. Basic barrier-free art drawing program for webcam and JavaScript
 
  # TODO
-
-## GUI
+ 
+GUI
 - add border
 - center video
 
-## Functions
+Functions
 - add video save
