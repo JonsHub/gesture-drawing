@@ -6,11 +6,11 @@
  # Install
 
  1. Download the repo or otherwise
- 2. Include following scripts by MediaPipe
+ 2. Include following scripts by MediaPipe as HTML src tags
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
-<script src="https://unpkg.com/ml5@1/dist/ml5.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
+"https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"
+"https://unpkg.com/ml5@1/dist/ml5.js"
+"https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"
 
  # TODO
  
