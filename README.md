@@ -1,2 +1,2 @@
-# Gesture Lab
- Draw and change (almost) entirely with your fingers. Very simple barrier-free art drawing program for Webcam and JavaScript
+# Gesture Drawing
+ Draw and change (almost) entirely with your fingers. Basic barrier-free art drawing program for Webcam and JavaScript
