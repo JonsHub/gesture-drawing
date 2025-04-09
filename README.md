@@ -22,4 +22,5 @@ Functions
 
 Fix:
 
+- documentation =/= chronology
 - left hand draw bug
