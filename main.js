@@ -20,13 +20,11 @@ function setup() {
 
   handPose.detectStart(video, gotHands);
 
-  // Buttons für Modusmodul
   createButton("Malen").position(10, 500).mousePressed(() => drawMode = "normal");
   createButton("Speed-Modus").position(100, 500).mousePressed(() => drawMode = "speed");
   createButton("Chaos").position(250, 500).mousePressed(() => drawMode = "chaos");
   createButton("Neu").position(400, 500).mousePressed(clearCanvas);
 
-  // Autospeicherung alle 45 Sekunden
   setInterval(autoSave, 45000);
 }
 
@@ -37,16 +35,10 @@ function gotHands(results) {
 function draw() {
   image(video, 0, 0);
 
-  // Modus-HUD
-  fill(255);
-  textSize(20);
-  text(`Modus: ${drawMode}`, 10, 30);
-
-  // Prüfen, ob eine linke Hand existiert
   let leftHandDetected = hands.some(hand => hand.handedness === "Left");
 
   if (leftHandDetected) {
-    px = null;  // Wenn linke Hand erkannt wurde, setzen wir px und py auf null
+    px = null;
     py = null;
   }
 
@@ -55,21 +47,19 @@ function draw() {
       let x = hand.index_finger_tip.x;
       let y = hand.index_finger_tip.y;
 
-      if (!leftHandDetected) { // Nur malen, wenn linke Hand nicht da ist
-        if (px !== null && py !== null) { // Nur zeichnen, wenn px und py definiert sind
+      if (!leftHandDetected) {
+        if (px !== null && py !== null) {
           if (drawMode === "normal") {
             painting.strokeWeight(7);
             painting.stroke(strokeColor);
             painting.line(px, py, x, y);
-          } 
-          else if (drawMode === "speed") {
+          } else if (drawMode === "speed") {
             let movementSpeed = dist(px, py, x, y);
             let thickness = map(movementSpeed, 0, 30, 1, 8);
             painting.strokeWeight(thickness);
             painting.stroke(strokeColor);
             painting.line(px, py, x, y);
-          } 
-          else if (drawMode === "chaos") {
+          } else if (drawMode === "chaos") {
             strokeColor = [random(255), random(255), random(255)];
             let shape = random(["circle", "line", "rectangle"]);
 
@@ -102,8 +92,7 @@ function clearCanvas() {
   painting.clear();
 }
 
-// Automatische Speicherung alle 45 Sekunden
 function autoSave() {
-  let timestamp = int(millis() / 1000); // Zeitstempel in Sekunden
+  let timestamp = int(millis() / 1000);
   save(painting, `drawing_${timestamp}.png`);
 }
