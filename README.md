@@ -19,4 +19,7 @@ GUI
 
 Functions
 - add video save
+
+Fix:
+
 - left hand draw bug
