@@ -21,6 +21,4 @@ Functions
 - add video save
 
 Fix:
-
-- documentation =/= chronology
 - left hand draw bug
