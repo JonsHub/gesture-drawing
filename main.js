@@ -5,7 +5,7 @@ let painting;
 let px, py = null;
 let drawMode = "normal"; // Modi: Normal, Speed, Chaos 
 let strokeColor = ["orange"];
-let saveCounter = 0;
+let saveCounter = 1;
 
 function preload() {
   handPose = ml5.handPose({ flipped: true });
@@ -27,8 +27,8 @@ function setup() {
   createButton("Chaos").position(250, 500).mousePressed(() => drawMode = "chaos");
   createButton("Neu").position(400, 500).mousePressed(clearCanvas);
 
-  // Autospeicherung alle 45 Sekunden
-  setInterval(autoSave, 45000);
+  // Autospeicherung alle 30 Sekunden
+  setInterval(autoSave, 30000);
 }
 
 function gotHands(results) {
@@ -105,7 +105,7 @@ function clearCanvas() {
 
 function autoSave() {
   let timestamp = int(millis() / 1000); // Zeitstempel in Sekunden
-  save(painting, `drawing_${timestamp}_${saveCounter}.png`);
-  saveCanvas(`canvas_${timestamp}_${saveCounter}`, 'png');
+  save(painting, `Zeichnung_${timestamp}_Sekunden_Nummer_${saveCounter}.png`);
+  saveCanvas(`Video_${timestamp}_Sekunden_Nummer_${saveCounter}`, 'png');
   saveCounter++;
 }
