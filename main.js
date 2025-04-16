@@ -14,6 +14,13 @@ function preload() {
 
 // === Initialisierung ===
 function setup() {
+    // Setze Canvas und Video in ein zentriertes Container-Div
+  let canvasContainer = createDiv().style('display', 'flex')
+  .style('justify-content', 'center')
+  .style('align-items', 'center')
+  .style('height', '100vh'); // Volle Browserhöhe
+  canvas.parent(canvasContainer);
+  video.parent(canvasContainer);
   createCanvas(640, 480);                           // Hauptanzeigefläche
   painting = createGraphics(640, 480);              // Separates Canvas für Zeichnungen
   painting.clear();                                 // Zeichenfläche leeren (transparent)
