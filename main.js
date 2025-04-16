@@ -1,87 +1,76 @@
-// === Globale Variablen ===
-let video;                      // Videostream der Webcam
-let handPose;                   // Handerkennungsmodell von ml5.js
-let hands = [];                 // Aktuell erkannte Hände
-let painting;                   // Unsichtbares Canvas zum Zeichnen
-let px, py = null;              // Vorherige Fingerpositionen
-let drawMode = "normal";        // Zeichenmodus: "normal", "speed" oder "chaos"
-let strokeColor = ["orange"];   // Zeichenfarbe
+let video;
+let handPose;
+let hands = [];
+let painting;
+let px, py = null;
+let drawMode = "normal"; // Modi: Normal, Speed, Chaos 
+let strokeColor = ["orange"];
 
-// === Lädt das HandPose-Modell ===
 function preload() {
-  handPose = ml5.handPose({ flipped: true }); // Spiegelt Bild für Nutzerfreundlichkeit
+  handPose = ml5.handPose({ flipped: true });
 }
 
-// === Initialisierung ===
 function setup() {
-    // Setze Canvas und Video in ein zentriertes Container-Div
-  let canvasContainer = createDiv().style('display', 'flex')
-  .style('justify-content', 'center')
-  .style('align-items', 'center')
-  .style('height', '100vh'); // Volle Browserhöhe
-  canvas.parent(canvasContainer);
-  video.parent(canvasContainer);
-  createCanvas(640, 480);                           // Hauptanzeigefläche
-  painting = createGraphics(640, 480);              // Separates Canvas für Zeichnungen
-  painting.clear();                                 // Zeichenfläche leeren (transparent)
+  createCanvas(640, 480);
+  painting = createGraphics(640, 480);
+  painting.clear();
 
-  video = createCapture(VIDEO, { flipped: true });  // Webcam aktivieren, gespiegelt
-  video.hide();                                     // Verstecken, wird manuell eingeblendet
+  video = createCapture(VIDEO, { flipped: true });
+  video.hide();
 
-  handPose.detectStart(video, gotHands);            // Startet Handerkennung
+  handPose.detectStart(video, gotHands);
 
-  // Buttons für Moduswahl und Steuerung
+  // Buttons für Modusmodul
   createButton("Malen").position(10, 500).mousePressed(() => drawMode = "normal");
   createButton("Speed-Modus").position(100, 500).mousePressed(() => drawMode = "speed");
   createButton("Chaos").position(250, 500).mousePressed(() => drawMode = "chaos");
   createButton("Neu").position(400, 500).mousePressed(clearCanvas);
 
-  // Alle 45 Sekunden automatisches Speichern
+  // Autospeicherung alle 45 Sekunden
   setInterval(autoSave, 45000);
 }
 
-// === Callback für Handerkennung ===
 function gotHands(results) {
-  hands = results;  // Liste der aktuell erkannten Hände aktualisieren
+  hands = results;
 }
 
-// === Hauptzeichenfunktion ===
 function draw() {
-  image(video, 0, 0);  // Webcam-Anzeige
+  image(video, 0, 0);
 
-  // Prüft, ob linke Hand erkannt wird (als "Stop-Funktion")
+  // Modus-HUD
+  fill(255);
+  textSize(20);
+  text(`Modus: ${drawMode}`, 10, 30);
+
+  // Prüfen, ob eine linke Hand existiert
   let leftHandDetected = hands.some(hand => hand.handedness === "Left");
+
   if (leftHandDetected) {
-    px = null;
+    px = null;  // Wenn linke Hand erkannt wurde, setzen wir px und py auf null
     py = null;
   }
 
-  // Durchlauf aller erkannten Hände
   for (let hand of hands) {
-    // Nur rechte Hand mit gültigem Zeigefinger wird verarbeitet
     if (hand.handedness === "Right" && hand.index_finger_tip && hand.confidence > 0.8) {
       let x = hand.index_finger_tip.x;
       let y = hand.index_finger_tip.y;
 
-      // Nur zeichnen, wenn keine linke Hand erkannt wird
-      if (!leftHandDetected && px !== null && py !== null) {
-        switch (drawMode) {
-          case "normal":
+      if (!leftHandDetected) { // Nur malen, wenn linke Hand nicht da ist
+        if (px !== null && py !== null) { // Nur zeichnen, wenn px und py definiert sind
+          if (drawMode === "normal") {
             painting.strokeWeight(7);
             painting.stroke(strokeColor);
             painting.line(px, py, x, y);
-            break;
-
-          case "speed":
-            let movementSpeed = dist(px, py, x, y);         // Berechnet Bewegungsdistanz
-            let thickness = map(movementSpeed, 0, 30, 1, 8); // Variable Strichdicke
+          } 
+          else if (drawMode === "speed") {
+            let movementSpeed = dist(px, py, x, y);
+            let thickness = map(movementSpeed, 0, 30, 1, 8);
             painting.strokeWeight(thickness);
             painting.stroke(strokeColor);
             painting.line(px, py, x, y);
-            break;
-
-          case "chaos":
-            strokeColor = [random(255), random(255), random(255)]; // Zufallsfarbe
+          } 
+          else if (drawMode === "chaos") {
+            strokeColor = [random(255), random(255), random(255)];
             let shape = random(["circle", "line", "rectangle"]);
 
             if (shape === "line") {
@@ -97,27 +86,24 @@ function draw() {
               painting.noStroke();
               painting.rect(x, y, random(10, 30), random(10, 30));
             }
-            break;
+          }
         }
       }
 
-      // Aktuelle Position wird zur neuen „alten“ Position
       px = x;
       py = y;
     }
   }
 
-  // Gezeichnete Linie anzeigen
   image(painting, 0, 0);
 }
 
-// === Leert die Zeichenfläche ===
 function clearCanvas() {
   painting.clear();
 }
 
-// === Speichert das aktuelle Bild als PNG ===
+// Automatische Speicherung alle 45 Sekunden
 function autoSave() {
-  let timestamp = int(millis() / 1000); // UNIX-Timestamp als Dateiname
+  let timestamp = int(millis() / 1000); // Zeitstempel in Sekunden
   save(painting, `drawing_${timestamp}.png`);
 }
