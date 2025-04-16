@@ -5,14 +5,15 @@ let painting;
 let px, py = null;
 let drawMode = "normal"; // Modi: Normal, Speed, Chaos 
 let strokeColor = ["orange"];
+let saveCounter = 0;
 
 function preload() {
   handPose = ml5.handPose({ flipped: true });
 }
 
 function setup() {
-  createCanvas(640, 480);
-  painting = createGraphics(640, 480);
+  createCanvas(1920, 1080);
+  painting = createGraphics(1920, 1080);
   painting.clear();
 
   video = createCapture(VIDEO, { flipped: true });
@@ -102,8 +103,9 @@ function clearCanvas() {
   painting.clear();
 }
 
-// Automatische Speicherung alle 45 Sekunden
 function autoSave() {
   let timestamp = int(millis() / 1000); // Zeitstempel in Sekunden
-  save(painting, `drawing_${timestamp}.png`);
+  save(painting, `drawing_${timestamp}_${saveCounter}.png`);
+  saveCanvas(`canvas_${timestamp}_${saveCounter}`, 'png');
+  saveCounter++;
 }
