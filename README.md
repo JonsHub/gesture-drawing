@@ -10,15 +10,3 @@
 
 "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js" \
 "https://unpkg.com/ml5@1/dist/ml5.js"
-
- # TODO
- 
-GUI
-- add border
-- center video
-
-Functions
-- add video save
-
-Fix:
-- left hand draw bug
